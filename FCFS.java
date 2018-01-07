@@ -40,7 +40,7 @@ class job {
 	}
 }
 
-public class homework {
+public class FCFS {
 
 	// finds the job with the lowest process id that doesn't have a remainingTime of 0
 	public static job oldest(job listJob[]) {

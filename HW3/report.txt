@@ -1,0 +1,33 @@
+0A.
+Before it forks !
+This is a child process This is the parent process
+Child Process: 0Parent Process: 0
+Parent Process: 1Child Process: 1
+Child Process: 2Parent Process: 2
+Parent Process: 3Child Process: 3
+
+Parent Process: 4Child Process: 4
+Parent Process: 5Child Process: 5
+Parent Process: 6Child Process: 6
+
+Parent Process: 7Child Process: 7
+
+Parent Process: 8Child Process: 8
+Parent Process: 9Child Process: 9
+Parent Process: 10Child Process: 10
+Parent Process: 11Child Process: 11
+Parent Process: 12Child Process: 12
+Parent Process: 13Child Process: 13
+
+Parent Process: 14
+Child Process: 14
+Parent Process: 15
+Child Process: 15
+Parent Process: 16
+Child Process: 16
+Parent Process: 17
+Child Process: 17
+Parent Process: 18
+Child Process: 18
+Parent Process: 19
+Child Process: 19

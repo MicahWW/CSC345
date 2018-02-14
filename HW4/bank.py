@@ -1,9 +1,12 @@
+import sys
+from inspect import currentframe, getframeinfo
+debug = True
 # takes two 2d arrays and subtracts them from one another (a - b)
 def sub2d(a,b):
 	if (len(a) != len(b)):
-		print "Error lists are not the same size"
+		sys.exit("ERROR: Lists are not the same size. Code A line {}".format(getframeinfo(currentframe()).lineno))
 	elif (len(a[0]) != len(b[0])):
-		print "Error lists are not the same size"
+		sys.exit("ERROR: Lists are not the same size. Code B line {}".format(getframeinfo(currentframe()).lineno))
 	else:
 		rows = len(a)
 		columns = len(a[0])
@@ -24,7 +27,7 @@ def sub2d(a,b):
 # takes two 1d arrays and subtracts them from one another (a - b)
 def sub1d(a,b):
 	if (len(a) != len(b)):
-		print "Error lists are not the same size"
+		sys.exit("ERROR: Lists are not the same size. Code C line {}".format(getframeinfo(currentframe()).lineno))
 	else:
 		rows = len(a)
 		
@@ -41,7 +44,7 @@ def sub1d(a,b):
 # takes two 1d arrays and adds them from one another
 def add1d(a,b):
 	if (len(a) != len(b)):
-		print "Error lists are not the same size"
+		sys.exit("ERROR: Lists are not the same size. Code D line {}".format(getframeinfo(currentframe()).lineno))
 	else:
 		rows = len(a)
 		
@@ -58,7 +61,7 @@ def add1d(a,b):
 # checks to see if A's values are less than or equal to B's values, for a 1d array (a <= b)
 def lessThan(a,b):
 	if (len(a) != len(b)):
-		print "Error lists are not the same size"
+		sys.exit("ERROR: Lists are not the same size. Code E line {}".format(getframeinfo(currentframe()).lineno))
 	else:
 		rows = len(a)
 		
@@ -72,16 +75,15 @@ def lessThan(a,b):
 				return False
 		return True
 	
-def updating(process, request):
-	global available
-	global max
-	global allocation
-	global need
-	
+# it updates the arrays: available, allocation, and need, with the process's request
+def updatingBankers(process, request, available, allocation, need):
 	available = sub1d(available, request)
 	allocation[process] = add1d(allocation[process], request)
 	need[process] = sub1d(need[process], request)
 	
+	return available, allocation, need
+	
+# runs the bankers algorithm
 def bankers(process, request):
 	global available
 	global max
@@ -93,47 +95,59 @@ def bankers(process, request):
 		# step 2
 		if (lessThan(request, available)):
 			# step 3
-			updating(process, request)
+			available, allocation, need = updatingBankers(process, request, available, allocation, need)
 			
 			# step 4
-			saftey()
+			saftey(available, allocation, need)
 		else:
-			print "Wait"
+			sys.exit("Wait. Request is larger than available. Code G")
 	else:
-		print "ERROR: Exceeds Needs"
+		sys.exit("ERROR: Exceeds Needs. Code F line {}".format(getframeinfo(currentframe()).lineno))
 		
-def safteyCheck(work, finish):
+# Step 3 of Safety: updates the work and finish arrays
+def updatingSafety(work, finish, allocation, process):
+		work = add1d(work, allocation[process])
+		finish[process] = True
+		return work, finish
+
+# this is the second step of the safety algorithm: it 
+def safteyCheck(work, finish, allocation, need):
 	i = 0
-	while(i<0):
+	# it takes the length of allocation to find the number of process
+	while(i<len(allocation)):
+		# if job is finished then go to next
 		if(finish[i] != False):
 			i += 1
 		else:
-			if(lessThan(need[i], work):
+			if(lessThan(need[i], work)):
+				print "p{}".format(i)
+				# step 3 of safety
+				work, finish = updatingSafety(work, finish, allocation, i)
+			i += 1
 
 	return work, finish
 	
-def saftey():
-	global available
-	global max
-	global allocation
-	global need
+def saftey(available, allocation, need):	
 	
 	work = available
-	# takes the length of max to determine how many jobs there are
-	finish = 	[False for x in range(len(max)]
+	# takes the length of allocation to determine how many jobs there are
+	finish = 	[False for x in range(len(allocation))]
 	# will be used to compare with finish to tell if all processes have finished
-	doneArray = [True for x in range(len(max)]
+	doneArray = [True for x in range(len(allocation))]
 	
 	done = False
 	
-	while(!done):
-		work, finish = safteyCheck(work, finish)
+	# loops until all process are finished
+	while(done == False):
+		# step 2
+		work, finish = safteyCheck(work, finish, allocation, need)
 		
+		# uses the equals too part of lessThan to check if all process are finished
 		done = lessThan(doneArray, finish)
 	
 	
 
-available = 	[10,5,7]
+available = 	 [3,3,2]
 max = 			[[7,5,3], [3,2,2], [9,0,2], [2,2,2], [4,3,3]]
 allocation = 	[[0,1,0], [2,0,0], [3,0,2], [2,1,1], [0,0,2]]
 need = sub2d(max, allocation)
@@ -152,4 +166,4 @@ C = 2
 
 p1_request = [1,0,2]
 
-bankers(p0, p1_request)
+bankers(p1, p1_request)
